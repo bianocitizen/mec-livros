@@ -1,0 +1,359 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pw-bg:#f5f0e8;--pw-bg2:#ede8df;--pw-text:#1a1a1a;--pw-text2:#555;--pw-text3:#888;
+  --pw-border:#ccc7bc;--pw-accent:#1a1a1a;--pw-cover-bg:#d8d3c8;
+  --pw-reader-bg:#f5f0e8;--pw-reader-text:#1a1a1a;
+}
+.kpw{width:100%;font-family:'Georgia',serif;background:var(--pw-bg);border-radius:12px;overflow:hidden;border:0.5px solid var(--pw-border)}
+.kpw.dark{--pw-bg:#1a1a1a;--pw-bg2:#242424;--pw-text:#e8e2d6;--pw-text2:#a0998e;--pw-text3:#666;--pw-border:#333;--pw-cover-bg:#2e2e2e;--pw-reader-bg:#1a1a1a;--pw-reader-text:#d8d2c6}
+.kpw.sepia{--pw-bg:#f4efe3;--pw-bg2:#ece6d8;--pw-text:#3b2f1e;--pw-text2:#7a6248;--pw-text3:#a08060;--pw-border:#c8b898;--pw-cover-bg:#ddd5c0;--pw-reader-bg:#f4efe3;--pw-reader-text:#3b2f1e}
+
+.screen{background:var(--pw-bg);min-height:680px;display:flex;flex-direction:column}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px;background:var(--pw-bg);border-bottom:0.5px solid var(--pw-border)}
+.topbar-title{font-size:11px;color:var(--pw-text3);font-family:Arial,sans-serif;letter-spacing:0.04em}
+.topbar-icons{display:flex;align-items:center;gap:14px;color:var(--pw-text2);font-size:16px}
+.topbar-icons i{cursor:pointer}
+.topbar-icons i:hover{color:var(--pw-text)}
+
+.lib-header{padding:18px 20px 12px;background:var(--pw-bg)}
+.lib-title{font-size:20px;font-weight:400;color:var(--pw-text);margin-bottom:12px;font-family:Georgia,serif}
+.lib-filters{display:flex;gap:0;border-bottom:1px solid var(--pw-border)}
+.lf-tab{padding:7px 14px;font-size:12px;font-family:Arial,sans-serif;color:var(--pw-text2);cursor:pointer;border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;white-space:nowrap}
+.lf-tab.on{color:var(--pw-text);border-bottom-color:var(--pw-text);font-weight:500}
+.lib-search{display:flex;align-items:center;gap:8px;padding:10px 20px 0;background:var(--pw-bg)}
+.lib-search input{flex:1;padding:7px 10px;font-size:13px;font-family:Arial,sans-serif;background:var(--pw-bg2);border:0.5px solid var(--pw-border);border-radius:4px;color:var(--pw-text)}
+.lib-search input::placeholder{color:var(--pw-text3)}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 12px;padding:16px 20px;overflow-y:auto;flex:1}
+.book-card{cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.book-card:hover .bcover{opacity:0.85}
+.bcover{width:100%;aspect-ratio:2/3;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 6px;position:relative;overflow:hidden}
+.bcover-spine{position:absolute;left:0;top:0;bottom:0;width:5px;background:rgba(0,0,0,0.15);border-radius:3px 0 0 3px}
+.bcover-title{font-size:10px;font-weight:500;color:#fff;text-align:center;line-height:1.3;word-break:break-word;font-family:Georgia,serif}
+.bcover-author{font-size:8px;color:rgba(255,255,255,0.8);text-align:center;margin-top:2px;font-family:Arial,sans-serif}
+.bcard-title{font-size:11px;color:var(--pw-text);line-height:1.3;font-family:Arial,sans-serif;font-weight:400}
+.bcard-author{font-size:10px;color:var(--pw-text2);font-family:Arial,sans-serif}
+.bprog-wrap{height:2px;background:var(--pw-border);border-radius:1px;margin-top:2px}
+.bprog-bar{height:100%;border-radius:1px;background:var(--pw-text)}
+.badge-emp{display:inline-block;font-size:9px;background:var(--pw-bg2);color:var(--pw-text2);padding:1px 5px;border-radius:2px;margin-top:2px;font-family:Arial,sans-serif;border:0.5px solid var(--pw-border)}
+
+.book-detail{display:flex;flex-direction:column;flex:1;background:var(--pw-bg)}
+.bd-topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:0.5px solid var(--pw-border)}
+.bd-back{font-size:18px;cursor:pointer;color:var(--pw-text2)}
+.bd-back:hover{color:var(--pw-text)}
+.bd-topbar-title{font-size:13px;color:var(--pw-text);font-family:Arial,sans-serif;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd-body{display:flex;gap:20px;padding:24px 20px;border-bottom:0.5px solid var(--pw-border)}
+.bd-cover{width:90px;min-width:90px;aspect-ratio:2/3;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 5px}
+.bd-info{flex:1;min-width:0}
+.bd-title{font-size:18px;font-weight:400;color:var(--pw-text);line-height:1.3;margin-bottom:4px;font-family:Georgia,serif}
+.bd-author{font-size:13px;color:var(--pw-text2);margin-bottom:10px;font-family:Arial,sans-serif}
+.bd-meta{font-size:12px;color:var(--pw-text3);line-height:1.7;font-family:Arial,sans-serif}
+.bd-prog-label{font-size:11px;color:var(--pw-text2);margin-bottom:4px;font-family:Arial,sans-serif}
+.bd-prog-wrap{height:3px;background:var(--pw-border);border-radius:2px;margin-bottom:12px}
+.bd-prog-bar{height:100%;border-radius:2px;background:var(--pw-text)}
+.bd-btn{display:inline-block;padding:10px 28px;background:var(--pw-text);color:var(--pw-bg);font-size:14px;border-radius:4px;cursor:pointer;font-family:Arial,sans-serif;border:none}
+.bd-btn:hover{opacity:0.85}
+.chapters{padding:0 20px 20px;flex:1;overflow-y:auto}
+.ch-label{font-size:11px;font-family:Arial,sans-serif;color:var(--pw-text3);padding:14px 0 8px;border-bottom:0.5px solid var(--pw-border);letter-spacing:0.05em}
+.ch-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid var(--pw-border);cursor:pointer}
+.ch-item:hover .ch-name{color:var(--pw-text)}
+.ch-name{font-size:14px;color:var(--pw-text2);font-family:Georgia,serif}
+.ch-arrow{font-size:14px;color:var(--pw-text3)}
+
+.reader{display:flex;flex-direction:column;flex:1;background:var(--pw-reader-bg)}
+.reader-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:0.5px solid var(--pw-border)}
+.reader-back{font-size:16px;cursor:pointer;color:var(--pw-text2)}
+.reader-back:hover{color:var(--pw-text)}
+.reader-controls{display:flex;align-items:center;gap:10px}
+.rc-btn{background:none;border:0.5px solid var(--pw-border);border-radius:3px;padding:5px 8px;cursor:pointer;font-size:13px;color:var(--pw-text2);font-family:Arial,sans-serif}
+.rc-btn:hover{color:var(--pw-text);border-color:var(--pw-text)}
+.rc-btn.on{color:var(--pw-text);border-color:var(--pw-text)}
+.theme-row{display:flex;border:0.5px solid var(--pw-border);border-radius:3px;overflow:hidden}
+.theme-row button{padding:5px 8px;font-size:11px;border:none;cursor:pointer;background:none;color:var(--pw-text2);font-family:Arial,sans-serif}
+.theme-row button.on{background:var(--pw-text);color:var(--pw-bg)}
+
+.reader-page{flex:1;padding:40px 64px;overflow-y:auto}
+.rp-chapter{font-size:10px;font-family:Arial,sans-serif;color:var(--pw-text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:32px;text-align:center}
+.rp-title{font-size:24px;font-weight:400;color:var(--pw-reader-text);text-align:center;margin-bottom:40px;line-height:1.3;font-family:Georgia,serif}
+.rp-para{font-size:19px;color:var(--pw-reader-text);line-height:1.9;text-align:justify;margin-bottom:1.5em;font-family:Georgia,serif;hyphens:auto}
+
+.reader-footer{display:flex;align-items:center;padding:10px 20px;border-top:0.5px solid var(--pw-border);gap:12px;background:var(--pw-bg)}
+.rf-prev,.rf-next{font-size:15px;cursor:pointer;color:var(--pw-text2);padding:4px 8px}
+.rf-prev:hover,.rf-next:hover{color:var(--pw-text)}
+.rf-bar{flex:1;height:2px;background:var(--pw-border);border-radius:1px;cursor:pointer}
+.rf-fill{height:100%;border-radius:1px;background:var(--pw-text);transition:width .3s}
+.rf-loc{font-size:11px;color:var(--pw-text3);font-family:Arial,sans-serif;min-width:36px;text-align:right}
+</style>
+
+<h2 class="sr-only">MEC Livros com interface fiel ao Kindle Paperwhite — biblioteca em grade, detalhe do livro e leitor de página</h2>
+
+<div class="kpw" id="kpw">
+  <div class="screen" id="screen-lib">
+    <div class="topbar">
+      <span class="topbar-title">MEC LIVROS</span>
+      <div class="topbar-icons">
+        <i class="ti ti-search" aria-hidden="true" onclick="toggleSearch()"></i>
+        <i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>
+        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="lib-header">
+      <div class="lib-title">Minha biblioteca</div>
+      <div class="lib-filters">
+        <button class="lf-tab on" onclick="switchTab('todos',this)">Todos</button>
+        <button class="lf-tab" onclick="switchTab('emp',this)">Emprestados</button>
+        <button class="lf-tab" onclick="switchTab('fav',this)">Favoritos</button>
+      </div>
+    </div>
+    <div class="lib-search" id="search-row" style="display:none">
+      <i class="ti ti-search" style="font-size:15px;color:var(--pw-text3)" aria-hidden="true"></i>
+      <input type="text" placeholder="Buscar na biblioteca..." id="sinput" oninput="filterBooks(this.value)" />
+    </div>
+    <div class="grid" id="blist"></div>
+  </div>
+
+  <div class="screen" id="screen-detail" style="display:none">
+    <div class="book-detail" id="book-detail"></div>
+  </div>
+
+  <div class="screen" id="screen-reader" style="display:none">
+    <div class="reader" id="reader-wrap">
+      <div class="reader-topbar">
+        <span class="reader-back" onclick="goBack('reader')" title="Voltar"><i class="ti ti-chevron-left" aria-hidden="true"></i> <span style="font-size:12px;font-family:Arial,sans-serif" id="rtop-title"></span></span>
+        <div class="reader-controls">
+          <div style="display:flex;align-items:center;gap:4px">
+            <button class="rc-btn" onclick="adjFont(-1)" style="font-size:11px">A-</button>
+            <span style="font-size:11px;color:var(--pw-text3);font-family:Arial,sans-serif;min-width:20px;text-align:center" id="fslabel">19</span>
+            <button class="rc-btn" onclick="adjFont(1)" style="font-size:13px">A+</button>
+          </div>
+          <div class="theme-row">
+            <button class="on" id="tb-w" onclick="setTheme('',this)">Branco</button>
+            <button id="tb-s" onclick="setTheme('sepia',this)">Sépia</button>
+            <button id="tb-d" onclick="setTheme('dark',this)">Escuro</button>
+          </div>
+          <button class="rc-btn" id="favbtn" onclick="toggleFavCurrent()"><i class="ti ti-heart" id="favicon" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="reader-page" id="reader-page">
+        <div class="rp-chapter" id="rp-ch"></div>
+        <div class="rp-title" id="rp-title"></div>
+        <div id="rp-body"></div>
+      </div>
+      <div class="reader-footer">
+        <span class="rf-prev" onclick="changePage(-1)"><i class="ti ti-chevron-left" aria-hidden="true"></i></span>
+        <div class="rf-bar" onclick="seekProg(event)"><div class="rf-fill" id="rf-fill"></div></div>
+        <span class="rf-loc" id="rf-loc"></span>
+        <span class="rf-next" onclick="changePage(1)"><i class="ti ti-chevron-right" aria-hidden="true"></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BOOKS=[
+  {id:1,title:"Dom Casmurro",author:"Machado de Assis",color:"#4a3f7a",emprestado:true,chapters:[
+    {num:"I",title:"Do título",text:["No caminho de Santa Teresa, o trem parou e eu entrei. O vagão estava quase vazio; havia apenas dois ou três passageiros. Num deles reconheci logo o homem que me fitava com olhos curiosos e simpáticos.","Era um rapaz de vinte e tantos anos, moreno, seco, com um ar de pessoa que não ignora a vida. Chamava-se José Dias, e era agregado de nossa casa há muitos anos.","Eu me lembro bem daquele dia. A tarde caía devagar sobre o Rio de Janeiro, tingindo o mar de laranja e púrpura. As casas brancas de Santa Teresa pareciam suspensas no ar."]},
+    {num:"II",title:"O livro",text:["O título deste livro é o meu apelido de infância. Não fui eu que o escolhi. Uma vizinha, amiga de minha mãe, pôs-me esse nome porque eu era muito fechado e reservado.","A história que vou contar começa quando eu tinha quinze anos e morava ainda na Rua de Mata-Cavalos. Nossa casa era grande e fresca, com um jardim comprido no fundo.","Minha mãe era viúva de um funcionário público. Éramos em três: ela, eu e o José Dias. Havia também a Capitu, nossa vizinha do lado."]}
+  ]},
+  {id:2,title:"A Metamorfose",author:"Franz Kafka",color:"#5a3e2b",emprestado:true,chapters:[
+    {num:"I",title:"A transformação",text:["Numa manhã, quando Gregor Samsa acordou de sonhos intranquilos, encontrou-se em sua cama metamorfoseado num inseto monstruoso. Estava deitado sobre seu dorso duro como couraça.","O que aconteceu comigo?, ele pensou. Não era um sonho. Seu quarto, um quarto humano normal, apenas um pouco pequeno demais, estava quieto entre as quatro paredes familiares.","Ele olhou pela janela: o tempo nublado — as gotas de chuva podiam ser ouvidas ao bater no zinco — fê-lo sentir-se completamente melancólico."]},
+    {num:"II",title:"A família",text:["Durante semanas a família tentou se adaptar à nova realidade. A irmã de Gregor havia assumido a responsabilidade de alimentá-lo, deslizando rapidamente comida para dentro do quarto.","Gregor observava, escondido atrás do sofá, os movimentos de sua família através da fresta da porta. Falavam sobre dinheiro e sobre o futuro incerto.","À noite, quando a casa ficava em silêncio, Gregor saía de seu esconderijo e caminhava pelas paredes e pelo teto."]}
+  ]},
+  {id:3,title:"Memórias Póstumas de Brás Cubas",author:"Machado de Assis",color:"#1a3f5c",emprestado:false,chapters:[
+    {num:"I",title:"Ao leitor",text:["Que Stendhal confessasse haver escrito um de seus livros para cem leitores, coisa é que admira e consterna.","Trata-se de uma obra difusa, na qual eu, Brás Cubas, se adotei a forma livre de um Sterne, não sei se lhe meti algumas rabugens de pessimismo.","Obra de finado. Escrevi-a com a pena da galhofa e a tinta da melancolia, e não é difícil antever o que poderá sair desse conúbio."]}
+  ]},
+  {id:4,title:"O Navio Negreiro",author:"Castro Alves",color:"#2d5a27",emprestado:false,chapters:[
+    {num:"I",title:"A visão do poeta",text:["Era noite. O brigue voava sobre o oceano como um espectro de asas negras. A lua surgiu por um momento entre as nuvens e iluminou o convés.","Nas ondas do oceano lá vai... Que esperança! Que âncora! A negra humanidade cheia de dor e de pranto.","Oh! Que doce a esperança no brilhante farol das ondas do mar, onde a liberdade um dia há de vencer."]}
+  ]},
+  {id:5,title:"Iracema",author:"José de Alencar",color:"#7a3520",emprestado:true,chapters:[
+    {num:"I",title:"A virgem dos lábios de mel",text:["Além, muito além daquela serra, que ainda azula no horizonte, nasceu Iracema, a virgem dos lábios de mel.","O sertão era verde e silencioso quando ela corria pela floresta, leve como a corça que ia caçar.","Foi assim que ela encontrou o guerreiro branco, que dormia à sombra de uma carnaúba, junto à margem do riacho."]}
+  ]},
+  {id:6,title:"Clara dos Anjos",author:"Lima Barreto",color:"#4a5a6a",emprestado:false,chapters:[
+    {num:"I",title:"O subúrbio",text:["O subúrbio carioca tem uma poesia especial, feita de vida simples e de horizontes abertos ao longe, onde o sol se põe glorioso sobre os morros distantes.","Clara dos Anjos nasceu numa dessas ruas tranquilas, filha de um carteiro honesto e de uma lavadeira dedicada.","A vida no subúrbio tinha seu ritmo próprio: o apito do trem, o pregão do vendedor ambulante, a música que escapava pelas janelas."]}
+  ]},
+  {id:7,title:"Vidas Secas",author:"Graciliano Ramos",color:"#6b4c1e",emprestado:true,chapters:[
+    {num:"I",title:"Mudança",text:["Na planície avermelhada os juazeiros alargavam duas manchas verdes. Os infelizes tinham caminhado o dia inteiro, estavam cansados e com fome.","Ordinariamente andavam em silêncio, eram pouco diferentes dos animais que conduziam. Fabiano, sua mulher, as crianças e a cachorra Baleia.","Pisavam na terra rachada e quente, carregando o pouco que tinham. O sol castigava sem piedade, e ao longe o sertão se estendia interminável."]}
+  ]},
+  {id:8,title:"O Cortiço",author:"Aluísio Azevedo",color:"#3d5a3e",emprestado:false,chapters:[
+    {num:"I",title:"João Romão",text:["João Romão chegou ao Rio de Janeiro aos onze anos, vindo da sua terra natal em Portugal, sem vintém no bolso, mas com uma vontade de ferro de enriquecer.","Começou a vida como caixeiro numa venda do bairro; dormia no próprio balcão e acordava antes do sol para varrer a rua.","Anos depois, era dono do seu próprio estabelecimento, e ao redor dele crescia o cortiço — aquele formigueiro humano, pulsante e ruidoso."]}
+  ]}
+];
+
+const PPG=2;
+let st={cur:null,ch:0,pg:0,fs:19,theme:'',favs:new Set(),prog:{},tab:'todos',q:'',screen:'lib',showSearch:false};
+
+function visBooks(){
+  let b=BOOKS;
+  if(st.tab==='emp') b=b.filter(x=>x.emprestado);
+  if(st.tab==='fav') b=b.filter(x=>st.favs.has(x.id));
+  if(st.q) b=b.filter(x=>x.title.toLowerCase().includes(st.q)||x.author.toLowerCase().includes(st.q));
+  return b;
+}
+
+function renderLib(){
+  const el=document.getElementById('blist');
+  const books=visBooks();
+  if(!books.length){el.innerHTML='<p style="font-size:12px;color:var(--pw-text3);text-align:center;padding:24px;grid-column:1/-1;font-family:Arial,sans-serif">Nenhum livro encontrado</p>';return;}
+  el.innerHTML=books.map(b=>{
+    const pct=st.prog[b.id]||0;
+    return `<div class="book-card" onclick="openDetail(${b.id})">
+      <div class="bcover" style="background:${b.color}">
+        <div class="bcover-spine"></div>
+        <div class="bcover-title">${b.title}</div>
+        <div class="bcover-author">${b.author.split(' ').slice(-1)[0]}</div>
+      </div>
+      <div class="bcard-title">${b.title}</div>
+      <div class="bcard-author">${b.author}</div>
+      ${b.emprestado?'<span class="badge-emp">Emprestado</span>':''}
+      ${pct>0?`<div class="bprog-wrap"><div class="bprog-bar" style="width:${pct}%"></div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function openDetail(id){
+  const b=BOOKS.find(x=>x.id===id);
+  if(!b)return;
+  st.cur=id;
+  showScreen('detail');
+  const pct=st.prog[id]||0;
+  const fav=st.favs.has(id);
+  document.getElementById('book-detail').innerHTML=`
+    <div class="bd-topbar">
+      <span class="bd-back" onclick="goBack('detail')"><i class="ti ti-chevron-left" aria-hidden="true"></i></span>
+      <span class="bd-topbar-title">${b.title}</span>
+      <span style="font-size:16px;cursor:pointer;color:var(--pw-text2)" onclick="toggleFavById(${b.id})"><i class="ti ti-heart${fav?' on':''}" id="dfav-icon" aria-hidden="true"></i></span>
+    </div>
+    <div class="bd-body">
+      <div class="bd-cover" style="background:${b.color}">
+        <div style="font-size:10px;font-weight:500;color:#fff;text-align:center;line-height:1.3;font-family:Georgia,serif">${b.title}</div>
+        <div style="font-size:8px;color:rgba(255,255,255,0.8);text-align:center;margin-top:3px;font-family:Arial,sans-serif">${b.author}</div>
+      </div>
+      <div class="bd-info">
+        <div class="bd-title">${b.title}</div>
+        <div class="bd-author">${b.author}</div>
+        <div class="bd-meta">${b.chapters.length} capítulo${b.chapters.length>1?'s':''} &nbsp;·&nbsp; ${b.emprestado?'<span style="color:var(--pw-text)">Emprestado</span>':'Disponível'}</div>
+        ${pct>0?`<div style="margin-top:12px"><div class="bd-prog-label">${pct}% lido</div><div class="bd-prog-wrap"><div class="bd-prog-bar" style="width:${pct}%"></div></div></div>`:'<div style="height:12px"></div>'}
+        <button class="bd-btn" onclick="openReader(${b.id},0,0)">${pct>0?'Continuar lendo':'Começar a ler'}</button>
+      </div>
+    </div>
+    <div class="chapters">
+      <div class="ch-label">CONTEÚDO</div>
+      ${b.chapters.map((c,i)=>`<div class="ch-item" onclick="openReader(${b.id},${i},0)">
+        <span class="ch-name">Capítulo ${c.num} — ${c.title}</span>
+        <span class="ch-arrow"><i class="ti ti-chevron-right" aria-hidden="true"></i></span>
+      </div>`).join('')}
+    </div>`;
+}
+
+function openReader(id,ch,pg){
+  const b=BOOKS.find(x=>x.id===id);
+  if(!b)return;
+  st.cur=id;st.ch=ch;st.pg=pg;
+  showScreen('reader');
+  document.getElementById('rtop-title').textContent=b.title;
+  document.getElementById('favicon').className='ti ti-'+(st.favs.has(id)?'star':'heart');
+  renderReaderPage();
+}
+
+function renderReaderPage(){
+  const b=BOOKS.find(x=>x.id===st.cur);
+  if(!b)return;
+  const ch=b.chapters[st.ch];
+  const slice=ch.text.slice(st.pg*PPG,st.pg*PPG+PPG);
+  document.getElementById('rp-ch').textContent='Capítulo '+ch.num;
+  document.getElementById('rp-title').textContent=ch.title;
+  document.getElementById('rp-body').innerHTML=slice.map(p=>`<p class="rp-para" style="font-size:${st.fs}px;line-height:${st.fs<=16?2:st.fs<=20?1.9:1.8}">${p}</p>`).join('');
+  const allPg=b.chapters.reduce((s,c)=>s+Math.ceil(c.text.length/PPG),0);
+  const before=b.chapters.slice(0,st.ch).reduce((s,c)=>s+Math.ceil(c.text.length/PPG),0);
+  const global=before+st.pg+1;
+  const pct=Math.round(global/allPg*100);
+  st.prog[st.cur]=pct;
+  document.getElementById('rf-fill').style.width=pct+'%';
+  document.getElementById('rf-loc').textContent=pct+'%';
+  document.getElementById('reader-page').scrollTop=0;
+}
+
+function changePage(d){
+  const b=BOOKS.find(x=>x.id===st.cur);
+  if(!b)return;
+  const totPg=Math.ceil(b.chapters[st.ch].text.length/PPG);
+  const np=st.pg+d;
+  if(np<0){if(st.ch>0){st.ch--;st.pg=Math.ceil(b.chapters[st.ch].text.length/PPG)-1;}else return;}
+  else if(np>=totPg){if(st.ch<b.chapters.length-1){st.ch++;st.pg=0;}else return;}
+  else st.pg=np;
+  renderReaderPage();
+}
+
+function adjFont(d){
+  st.fs=Math.max(14,Math.min(26,st.fs+d));
+  document.getElementById('fslabel').textContent=st.fs;
+  document.querySelectorAll('.rp-para').forEach(p=>{p.style.fontSize=st.fs+'px';p.style.lineHeight=st.fs<=16?'2':st.fs<=20?'1.9':'1.8';});
+}
+
+function setTheme(t,btn){
+  st.theme=t;
+  document.getElementById('kpw').className='kpw'+(t?' '+t:'');
+  ['tb-w','tb-s','tb-d'].forEach(x=>document.getElementById(x).classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function showScreen(s){
+  st.screen=s;
+  document.getElementById('screen-lib').style.display=s==='lib'?'flex':'none';
+  document.getElementById('screen-detail').style.display=s==='detail'?'flex':'none';
+  document.getElementById('screen-reader').style.display=s==='reader'?'flex':'none';
+}
+
+function goBack(from){
+  if(from==='reader'){showScreen('detail');openDetail(st.cur);}
+  else{showScreen('lib');renderLib();}
+}
+
+function toggleFavById(id){
+  if(st.favs.has(id))st.favs.delete(id);else st.favs.add(id);
+  const icon=document.getElementById('dfav-icon');
+  if(icon)icon.className='ti ti-'+(st.favs.has(id)?'star':'heart');
+}
+
+function toggleFavCurrent(){
+  if(!st.cur)return;
+  if(st.favs.has(st.cur))st.favs.delete(st.cur);else st.favs.add(st.cur);
+  document.getElementById('favicon').className='ti ti-'+(st.favs.has(st.cur)?'star':'heart');
+}
+
+function seekProg(e){
+  const b=BOOKS.find(x=>x.id===st.cur);
+  if(!b)return;
+  const pct=e.offsetX/e.currentTarget.offsetWidth;
+  const allPg=b.chapters.reduce((s,c)=>s+Math.ceil(c.text.length/PPG),0);
+  let target=Math.max(0,Math.floor(pct*allPg));
+  let acc=0;
+  for(let i=0;i<b.chapters.length;i++){
+    const cp=Math.ceil(b.chapters[i].text.length/PPG);
+    if(acc+cp>target){st.ch=i;st.pg=target-acc;break;}
+    acc+=cp;
+  }
+  renderReaderPage();
+}
+
+function switchTab(t,btn){
+  st.tab=t;
+  document.querySelectorAll('.lf-tab').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on');
+  renderLib();
+}
+
+function filterBooks(q){st.q=q.toLowerCase();renderLib();}
+
+function toggleSearch(){
+  st.showSearch=!st.showSearch;
+  document.getElementById('search-row').style.display=st.showSearch?'flex':'none';
+  if(st.showSearch)document.getElementById('sinput').focus();
+}
+
+showScreen('lib');
+renderLib();
+</script>
